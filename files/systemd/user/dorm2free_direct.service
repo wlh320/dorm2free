@@ -1,0 +1,12 @@
+[Unit]
+Description=redirect local traffic to remote socks5 server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/wlh/bin
+Environment=RUST_LOG=warn
+ExecStart=/home/wlh/bin/dorm2free_direct -p 8022
+Restart=always
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=redirect local traffic to v2ray port of remote server
+After=network.target
+
+[Service]
+WorkingDirectory=/home/wlh/bin
+Environment=RUST_LOG=warn
+ExecStart=/home/wlh/bin/dorm2free -p 8022
+Restart=always
+
+[Install]
+WantedBy=default.target

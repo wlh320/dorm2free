@@ -1,0 +1,14 @@
+--2022-05-25 19:55:52--  https://github.com/wlh320/portguard-systray/blob/master/icons/icon.ico
+Loaded CA certificate '/etc/ssl/certs/ca-certificates.crt'
+Resolving github.com (github.com)... 20.205.243.166
+Connecting to github.com (github.com)|20.205.243.166|:443... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: unspecified [text/html]
+Saving to: ‘icon.ico’
+
+     0K .......... .......... .......... .......... ..........  464K
+    50K .......... .......... .......... .......... ..........  834K
+   100K .......... .......... ..                               4.31M=0.2s
+
+2022-05-25 19:55:53 (709 KB/s) - ‘icon.ico’ saved [125440]
+

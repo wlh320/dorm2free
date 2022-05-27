@@ -1,0 +1,12 @@
+[Unit]
+Description=clash-premium-bin-2022.05.18
+After=tailscaled.service
+
+[Service]
+WorkingDirectory=/home/wlh/bin
+ExecStart=/usr/bin/clash
+Restart=always
+
+[Install]
+WantedBy=default.target
+

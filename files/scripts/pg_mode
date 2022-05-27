@@ -1,0 +1,9 @@
+#!/bin/bash
+if pgrep -x "dorm2free" >/dev/null
+then
+    systemctl --user stop dorm2free && systemctl --user start dorm2free_direct
+    echo "socks5"
+else
+    systemctl --user stop dorm2free_direct && systemctl --user start dorm2free
+    echo "v2ray"
+fi
