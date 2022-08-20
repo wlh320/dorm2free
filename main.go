@@ -7,7 +7,6 @@ import (
 	"github.com/gen2brain/dlgs"
 	"github.com/getlantern/systray"
 	"github.com/imroc/req/v3"
-	"github.com/martinlindhe/notify"
 	"github.com/wlh320/portguard-systray2/icon"
 )
 
@@ -27,19 +26,27 @@ func setMenu(iconPath string) {
 	systray.SetTitle("Portgaurd Systray")
 	systray.SetTooltip("Portguard Systray App")
 
-	// 1. clash_mode
+	// 1. start or stop clash service
+	mOnoff := systray.AddMenuItem("Clash: On", "Start/Stop clash")
+	// init
+	mOnoff.SetTitle("clash mode: " + ToggleClashOnoff())
+	mOnoff.SetTitle("clash mode: " + ToggleClashOnoff())
+
+	// 2. toggle clash mode
 	mClash := systray.AddMenuItem("Clash mode", "Change clash mode")
 	// init
-	mClash.SetTitle("clash mode: " + ToggleClashMode())
+	for ToggleClashMode() == "none" {
+		mClash.SetTitle("clash mode: " + ToggleClashMode())
+	}
 	mClash.SetTitle("clash mode: " + ToggleClashMode())
 
-	// 2. pg_mode
+	// 3. toggle portguard mode
 	mPg := systray.AddMenuItem("Portguard mode", "Change portguard mode")
 	// init
 	mPg.SetTitle("pg mode: " + TogglePGMode())
 	mPg.SetTitle("pg mode: " + TogglePGMode())
 
-	// 3. About & Quit button
+	// 4. About & Quit button
 	systray.AddSeparator()
 	mAbout := systray.AddMenuItem("About", "About this app")
 	mQuit := systray.AddMenuItem("Quit", "Quit the whole app")
@@ -47,14 +54,18 @@ func setMenu(iconPath string) {
 	go func() {
 		for {
 			select {
+			case <-mOnoff.ClickedCh:
+				output := ToggleClashOnoff()
+				mOnoff.SetTitle("clash: " + output)
+				Notify("clash", "clash", "switch clash to "+output, iconPath)
 			case <-mClash.ClickedCh:
 				output := ToggleClashMode()
 				mClash.SetTitle("clash mode: " + output)
-				notify.Notify("clash", "clash mode", "Change clash mode to "+output, iconPath)
+				Notify("clash", "clash mode", "Change clash mode to "+output, iconPath)
 			case <-mPg.ClickedCh:
 				output := TogglePGMode()
 				mPg.SetTitle("pg mode: " + output)
-				notify.Notify("portguard", "pg mode", "Change portguard mode to "+output, iconPath)
+				Notify("portguard", "pg mode", "Change portguard mode to "+output, iconPath)
 			case <-mAbout.ClickedCh:
 				dlgs.MessageBox("About portguard-systray2", "Version 0.0.1")
 			case <-mQuit.ClickedCh:
@@ -65,6 +76,22 @@ func setMenu(iconPath string) {
 			}
 		}
 	}()
+}
+
+func ToggleClashOnoff() string {
+	stdout, _ := exec.Command("pgrep", "-x", "clash").Output()
+	isRunningClash := (len(stdout) != 0)
+	if isRunningClash { // on -> off
+		if err := exec.Command("systemctl", "--user", "stop", "clash").Run(); err != nil {
+			dlgs.Warning("Fail", err.Error())
+		}
+		return "Off"
+	} else { // off -> on
+		if err := exec.Command("systemctl", "--user", "start", "clash").Run(); err != nil {
+			dlgs.Warning("Fail", err.Error())
+		}
+		return "On"
+	}
 }
 
 func ToggleClashMode() string {
@@ -115,4 +142,9 @@ func TogglePGMode() string {
 		}
 		return "v2ray"
 	}
+}
+
+func Notify(appName string, title string, text string, iconPath string) {
+	cmd := exec.Command("notify-send", "-a", appName, "-i", iconPath, title, text)
+	cmd.Run()
 }
