@@ -29,8 +29,8 @@ func setMenu(iconPath string) {
 	// 1. start or stop clash service
 	mOnoff := systray.AddMenuItem("Clash: On", "Start/Stop clash")
 	// init
-	mOnoff.SetTitle("clash mode: " + ToggleClashOnoff())
-	mOnoff.SetTitle("clash mode: " + ToggleClashOnoff())
+	mOnoff.SetTitle("clash: " + ToggleClashOnoff())
+	mOnoff.SetTitle("clash: " + ToggleClashOnoff())
 
 	// 2. toggle clash mode
 	mClash := systray.AddMenuItem("Clash mode", "Change clash mode")
